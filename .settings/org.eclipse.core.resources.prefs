@@ -1,0 +1,14 @@
+eclipse.preferences.version=1
+encoding//src/db.py=utf-8
+encoding//src/get_gupiao_data.py=utf-8
+encoding//src/get_stock.py=utf-8
+encoding//src/get_stock_list.py=utf-8
+encoding//src/gui.py=utf-8
+encoding//src/gupiao.py=utf-8
+encoding//src/gupiaojiaoben.py=utf-8
+encoding//src/input_stock_data.py=utf-8
+encoding//src/make_chart.py=utf-8
+encoding//src/start.py=utf-8
+encoding//src/stock_transaction/db.py=utf-8
+encoding//src/stock_transaction/deal.py=utf-8
+encoding//src/test.py=utf-8
