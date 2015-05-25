@@ -4,10 +4,11 @@
 '''
 Created on 2015年5月11日
 
-@author: Administrator
+@author: fucheng
 印花税:0.001 sell收取
 过户费:1 or 0.001*num sh收取
 佣金:5 or 0.003 可为变量
+
 '''
 
 class Deal(object):
@@ -15,31 +16,31 @@ class Deal(object):
     '''
             股票模拟交易程序
     '''
-    def __init__(self,price,stock_price,num,market,behavior,rate):
+    def __init__(self,money,stock_num,rate):
         '''
                         构造函数
         '''
-        
-        self.num = num
-        self.stock_price = stock_price
-        self.price = price
-        self.market = market
-        self.behavior = behavior
+        self.money = money
+        self.stock_num = stock_num
         self.rate = rate
         self.tax=0.001
         
         
-    def do_deal(self):
-        if self.behavior=='buy':
-            if self.price>=self.stock_price:
-                buy_money=self.price*self.num+self.cost(self.price,self.num,self.market,self.behavior,self.rate)
-                return [buy_money,1]
+    def do_deal(self,behavior,price,stock_price,num,market):
+        if behavior=='buy':
+            if price>=stock_price:
+                buy_money=price*num+self.cost(price,num,market,behavior,self.rate)
+                self.stock_num=num 
+                self.money=self.money-buy_money
+                return [buy_money,self.stock_num,self.money]
             else:
                 return [0,0]
         elif behavior=='sell':
-            if self.price>=self.stock_price:
-                sell_money=self.price*self.num-self.cost(self.price,self.num,self.market,self.behavior,self.rate)
-                return [sell_money,1]
+            if price>=stock_price and self.stock_num >= num:
+                sell_money=price*num-self.cost(price,num,market,behavior,self.rate)
+                self.stock_num=self.stock_num-num
+                self.money=self.mone+sell_money
+                return [sell_money,self.stock_num,self.money]
             else:
                 return [0,0]
     
