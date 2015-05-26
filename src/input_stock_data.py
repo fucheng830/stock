@@ -84,6 +84,61 @@ def make_chart(x,var1,var2,var3):
    #pl.ylim(0.0, 30.)
  
     
+
+
+
+
+
+def max_buy(money,price):
+    fixPrice=price*(1+0.0003)
+    return money/fixPrice
+    #return math.floor(money/fixPrice)
+        
+
+def make_deal(orginal_money,market):
+    myDeal = Deal(money=orginal_money,stock_num=0,rate=0.0003)
+    x,y=input_data()
+    y=limit(y,4900,5000)
+    b=[]
+    assets=[]
+    
+    for index,nowprice in enumerate(y):
+        
+        b.append(nowprice)
+        ma5=ma(b)
+        ma10=ma(b,10)
+        
+        if  ma5[len(ma5) - 2]>=ma5[-1] and ma5[-1]>=ma10[-1] and myDeal.money>float(nowprice):
+            num=max_buy(myDeal.money,float(nowprice))
+            #rest=myDeal.do_deal('buy',float(nowprice),float(nowprice),num,market)
+            print "买入价格%s"%float(nowprice)
+            print "买入数量%s"%num
+            deal_return=myDeal.do_deal('buy',float(nowprice),float(nowprice),num,market)
+           
+            
+        elif ma5[len(ma5) - 2]<=ma5[-1] and ma5[-1]<=ma10[-1 ] and myDeal.stock_num>1 :
+            num=myDeal.stock_num
+            print "卖出%s"%num
+            print myDeal.do_deal('sell',float(nowprice),float(nowprice),num,market) 
+            
+        else:
+           pass 
+        
+        assets.append([deal_return[1]*float(nowprice)+myDeal.money])
+            
+    return assets,ma5,ma10 
+    
+def make_chart_assets(x,var1,var2,var3):
+   pl.plot(x,var1, '-', color='red')
+   pl.plot(x,var2,'-', color='cyan')
+   pl.plot(x,var3,'-',color='yellow')
+   pl.title(u'pingan') 
+   pl.xlabel(u'time')
+   pl.ylabel(u'value')
+   pl.show()        
+var1,var2,var3=make_deal(orginal_money=100000, market='sz') 
+
+make_chart_assets(range(len(var1)),var1,var2,var3)
 '''
 x,y=input_data()
 ma5=limit(ma(y,5),4900,5000)
@@ -91,31 +146,9 @@ ma10=limit(ma(y,10),4900,5000)
 y=limit(y,4900,5000)
 make_chart(range(len(ma5)),ma5,ma10,y)
 '''
-    
-
-def make_deal(orginal_money,market):
-    myDeal = Deal(money=orginal_money,stock_num=0,rate=0.0003)
-    x,y=input_data()
-    print y
-    b=[]
-    for index,nowprice in enumerate(y):
-        b.append(nowprice)
-        ma5=ma(b)
-        ma10=ma(b,10)
-        
-        if index >100 and ma5[-2]<ma5[-1] and ma5[-1]>=ma10[-1] and myDeal.money>nowprice:
-            
-            num=math.floor(orginal_money/float(nowprice))
-            print "买入%s"%num
-            print myDeal.do_deal('buy',float(nowprice),float(nowprice),num,market)
-            
-        elif index >100 and ma5[-2]>ma5[-1] and ma5[-1]<=ma10[-1 ] and myDeal.stock_num>1 :
-            num=myDeal.stock_num
-            print "卖出%s"%num
-            print myDeal.do_deal('sell',float(nowprice),float(nowprice),num,market) 
-    return myDeal.money 
-    
-        
-print make_deal(orginal_money=100000, market='sz')     
+#print max_buy(100000,17.54) 
+#myDeal=Deal(money=100000,stock_num=0,rate=0.0003)
+#print myDeal.do_deal('buy',17.54,17.54,5684,market="sz")   
+#print myDeal.cost(17.54, 5684, market="sz", behavior='buy', rate=0.0003) 
         
     

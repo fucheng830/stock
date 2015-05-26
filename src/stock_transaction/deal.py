@@ -30,7 +30,7 @@ class Deal(object):
         if behavior=='buy':
             if price>=stock_price:
                 buy_money=price*num+self.cost(price,num,market,behavior,self.rate)
-                self.stock_num=num 
+                self.stock_num=self.stock_num+num
                 self.money=self.money-buy_money
                 return [buy_money,self.stock_num,self.money]
             else:
@@ -39,7 +39,7 @@ class Deal(object):
             if price>=stock_price and self.stock_num >= num:
                 sell_money=price*num-self.cost(price,num,market,behavior,self.rate)
                 self.stock_num=self.stock_num-num
-                self.money=self.mone+sell_money
+                self.money=self.money+sell_money
                 return [sell_money,self.stock_num,self.money]
             else:
                 return [0,0]
