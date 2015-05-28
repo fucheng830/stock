@@ -124,21 +124,28 @@ def make_deal(orginal_money,market):
         else:
            pass 
         
-        assets.append([deal_return[1]*float(nowprice)+myDeal.money])
+        assets.append([myDeal.stock_num*float(nowprice)+myDeal.money])
             
-    return assets,ma5,ma10 
+    return y,ma5,ma10,assets 
     
-def make_chart_assets(x,var1,var2,var3):
-   pl.plot(x,var1, '-', color='red')
+def make_chart_assets(x,var1,var2,var3,var4):
+   pl.figure(figsize=(len(x)*1,len(x)/4), dpi=80,) 
+   a1=pl.subplot(211)
+   pl.plot(x,var1,'-',color='red')
    pl.plot(x,var2,'-', color='cyan')
    pl.plot(x,var3,'-',color='yellow')
-   pl.title(u'pingan') 
-   pl.xlabel(u'time')
-   pl.ylabel(u'value')
-   pl.show()        
-var1,var2,var3=make_deal(orginal_money=100000, market='sz') 
 
-make_chart_assets(range(len(var1)),var1,var2,var3)
+
+   a2=pl.subplot(212)
+   pl.plot(x,var4,'-',color='blue')
+   
+ 
+   pl.show()        
+
+
+var1,var2,var3,var4=make_deal(orginal_money=100000, market='sz') 
+
+make_chart_assets(range(len(var1)),var1,var2,var3,var4)
 '''
 x,y=input_data()
 ma5=limit(ma(y,5),4900,5000)
