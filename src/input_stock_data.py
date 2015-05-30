@@ -91,51 +91,117 @@ def make_chart(x,var1,var2,var3):
 
 def max_buy(money,price):
     fixPrice=price*(1+0.0003)
-    return money/fixPrice
-    #return math.floor(money/fixPrice)
+    #return money/fixPrice
+    return math.floor(money/fixPrice)
         
 
 def make_deal(orginal_money,market):
     myDeal = Deal(money=orginal_money,stock_num=0,rate=0.0003)
     x,y=input_data()
-    y=limit(y,4900,5000)
+    #ma5=ma(y)
+    #ma10=ma(y,n=10)
+    ma5=limit(ma(y),4700,5000)
+    ma10=limit(ma(y,n=10),4700,5000)
+    y=limit(y,4700,5000)
+    
     b=[]
     assets=[]
+    deal_buy_x=[]
+    deal_buy_y=[]
+    deal_sell_x=[]
+    deal_sell_y=[]
     
     for index,nowprice in enumerate(y):
         
         b.append(nowprice)
-        ma5=ma(b)
-        ma10=ma(b,10)
+        ma5[index]
+        ma10[index]
         
-        if  ma5[len(ma5) - 2]>=ma5[-1] and ma5[-1]>=ma10[-1] and myDeal.money>float(nowprice):
+        if  index >10 and ma5[index-1]>=ma5[index] and ma5[index]>=ma10[index] and myDeal.money>float(nowprice):
             num=max_buy(myDeal.money,float(nowprice))
             #rest=myDeal.do_deal('buy',float(nowprice),float(nowprice),num,market)
             print "买入价格%s"%float(nowprice)
             print "买入数量%s"%num
             deal_return=myDeal.do_deal('buy',float(nowprice),float(nowprice),num,market)
+            deal_buy_x.append(index)
+            deal_buy_y.append(float(nowprice))
+            
            
             
-        elif ma5[len(ma5) - 2]<=ma5[-1] and ma5[-1]<=ma10[-1 ] and myDeal.stock_num>1 :
+        elif index>10 and ma5[index-1]<=ma5[index] and ma5[index]<=ma10[index] and myDeal.stock_num>1 :
             num=myDeal.stock_num
             print "卖出%s"%num
-            print myDeal.do_deal('sell',float(nowprice),float(nowprice),num,market) 
+            deal_return=myDeal.do_deal('sell',float(nowprice),float(nowprice),num,market) 
+            deal_sell_x.append(index)
+            deal_sell_y.append(float(nowprice))
             
         else:
            pass 
         
         assets.append([myDeal.stock_num*float(nowprice)+myDeal.money])
             
-    return y,ma5,ma10,assets 
+    return y,ma5,ma10,assets,deal_buy_x,deal_buy_y,deal_sell_x,deal_sell_y 
+
+def make_deal2(orginal_money,market):
+    myDeal = Deal(money=orginal_money,stock_num=0,rate=0.0003)
+    x,y=input_data()
+    #ma5=ma(y)
+    #ma10=ma(y,n=10)
+    ma5=limit(ma(y),4700,5000)
+    ma10=limit(ma(y,n=10),4700,5000)
+    y=limit(y,4700,5000)
     
-def make_chart_assets(x,var1,var2,var3,var4):
-   pl.figure(figsize=(len(x)*1,len(x)/4), dpi=80,) 
+    b=[]
+    assets=[]
+    deal_buy_x=[]
+    deal_buy_y=[]
+    deal_sell_x=[]
+    deal_sell_y=[]
+    
+    for index,nowprice in enumerate(y):
+        
+        b.append(nowprice)
+        ma5[index]
+        ma10[index]
+        
+        if  index >10 and float(nowprice)>ma5[index] and myDeal.money>float(nowprice):
+            num=max_buy(myDeal.money,float(nowprice))
+            #rest=myDeal.do_deal('buy',float(nowprice),float(nowprice),num,market)
+            print "买入价格%s"%float(nowprice)
+            print "买入数量%s"%num
+            deal_return=myDeal.do_deal('buy',float(nowprice),float(nowprice),num,market)
+            deal_buy_x.append(index)
+            deal_buy_y.append(float(nowprice))
+            
+           
+            
+        elif index>10 and float(nowprice)<ma5[index] and myDeal.stock_num>1 :
+            num=myDeal.stock_num
+            print "卖出%s"%num
+            deal_return=myDeal.do_deal('sell',float(nowprice),float(nowprice),num,market) 
+            deal_sell_x.append(index)
+            deal_sell_y.append(float(nowprice))
+            
+        else:
+           pass 
+        
+        assets.append([myDeal.stock_num*float(nowprice)+myDeal.money])
+            
+    return y,ma5,ma10,assets,deal_buy_x,deal_buy_y,deal_sell_x,deal_sell_y 
+    
+def make_chart_assets(x,var1,var2,var3,var4,buyX,buyY,sellX,sellY):
+   pl.figure(dpi=80) 
    a1=pl.subplot(211)
    pl.plot(x,var1,'-',color='red')
    pl.plot(x,var2,'-', color='cyan')
    pl.plot(x,var3,'-',color='yellow')
-
-
+   #pl.plot(buyX,buyY,'.',color='magenta')
+   #pl.plot(sellX,sellY,'.',color='black')
+   pl.scatter(buyX,buyY, color ='blue')
+   pl.scatter(sellX,sellY,color ='black')
+   #pl.scatter(buyX,buyY)
+   #pl.scatter(sellX,sellY)
+   
    a2=pl.subplot(212)
    pl.plot(x,var4,'-',color='blue')
    
@@ -143,9 +209,9 @@ def make_chart_assets(x,var1,var2,var3,var4):
    pl.show()        
 
 
-var1,var2,var3,var4=make_deal(orginal_money=100000, market='sz') 
+#var1,var2,var3,var4=make_deal(orginal_money=100000, market='sz') 
 
-make_chart_assets(range(len(var1)),var1,var2,var3,var4)
+#make_chart_assets(range(len(var1)),var1,var2,var3,var4)
 '''
 x,y=input_data()
 ma5=limit(ma(y,5),4900,5000)
@@ -153,6 +219,12 @@ ma10=limit(ma(y,10),4900,5000)
 y=limit(y,4900,5000)
 make_chart(range(len(ma5)),ma5,ma10,y)
 '''
+    
+var1,var2,var3,var4,buyX,buyY,sellX,sellY=make_deal(orginal_money=100000, market='sz')
+
+#np.shape()
+make_chart_assets(range(len(var1)),var1,var2,var3,var4,buyX,buyY,sellX,sellY)
+
 #print max_buy(100000,17.54) 
 #myDeal=Deal(money=100000,stock_num=0,rate=0.0003)
 #print myDeal.do_deal('buy',17.54,17.54,5684,market="sz")   
